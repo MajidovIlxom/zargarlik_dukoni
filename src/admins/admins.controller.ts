@@ -1,5 +1,4 @@
 import { Controller, Get, Post, Body, Param, Delete, Res, UseGuards } from '@nestjs/common';
-import { CreateAdminDto } from './dto/create-Admin.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { AdminsService } from './admins.service';
@@ -8,6 +7,7 @@ import { LoginAdminDto } from './dto/login-admin.dto';
 import { AdminGuard } from '../guards/jwt.admin.guard';
 import { CookieGetter } from '../decorators/cookie-getter.decorator';
 import { FindAdminDto } from './dto/find-admin.dto';
+import { CreateAdminDto } from './dto/create-admin.dto';
 
 
 @ApiTags("Admins")
