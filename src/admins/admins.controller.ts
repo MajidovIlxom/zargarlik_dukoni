@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Headers, Res, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { AdminsService } from './admins.service';
@@ -8,6 +8,7 @@ import { AdminGuard } from '../guards/jwt.admin.guard';
 import { CookieGetter } from '../decorators/cookie-getter.decorator';
 import { FindAdminDto } from './dto/find-admin.dto';
 import { CreateAdminDto } from './dto/create-admin.dto';
+import { ChangePassword } from './dto/change-password-admin.dto';
 
 
 @ApiTags("Admins")
@@ -25,11 +26,24 @@ export class AdminController {
     return this.adminService.registration(createAdminDto, res);
   }
 
+  @Post('update-pass')
+  @UseGuards(AdminGuard)
+  async updatePass(
+    @Headers('authorization') authorization: string, @Body() updatePassDto: ChangePassword) {
+    const refreshToken = authorization.replace('Bearer ', ''); 
+    return this.adminService.updatePass(refreshToken, updatePassDto);
+  }
+  
   @ApiOperation({summary: "activate user"})
   @ApiResponse({status: 200, type: [Admin]})
   @Get('activate/:link')
   activate(@Param('link') link:string) {
     return this.adminService.activate(link)
+  }
+
+  @Get('all')
+  findAllAdmin() {
+    return this.adminService.findAllAdmin();
   }
 
   @ApiOperation({summary: "login admin"})
@@ -53,7 +67,10 @@ export class AdminController {
     
     @ApiOperation({summary: "refresh Admin's tokens"})
     @Post(':id/refresh')
-    refresh(@Param('id') id:string, @CookieGetter('refresh_token') refreshToken:string,@Res({passthrough: true}) res: Response){
+    refresh(
+      @Param('id') id:string, 
+      @CookieGetter('refresh_token') refreshToken:string,
+      @Res({passthrough: true}) res: Response){
       return this.adminService.refreshToken(+id,refreshToken,res)
     }
     

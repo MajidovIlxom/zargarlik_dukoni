@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Res, UseGuards, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Headers, Res, UseGuards, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -27,7 +27,7 @@ export class UserController {
     ) {      
     return this.userService.registeration(createUserDto, res, photo);
   }
- 
+
   @ApiOperation({summary: "login user"})
   @ApiResponse({status: 200, type: User})
   @Post("login")

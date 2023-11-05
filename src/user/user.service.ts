@@ -1,5 +1,5 @@
 import { FilesService } from './../files/files.service';
-import { BadRequestException, ForbiddenException, Injectable, UnauthorizedException, ServiceUnavailableException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, UnauthorizedException, ServiceUnavailableException, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './Models/user.models';
@@ -11,6 +11,7 @@ import { LoginUserDto } from './dto/login-user.dto';
 import { FindUserDto } from './dto/find-user.dto';
 import { Op } from 'sequelize';
 import { SmsService } from '../sms/sms.service';
+import { MailService } from '../mail/mail.service';
 
 
 @Injectable()
@@ -20,6 +21,7 @@ export class UserService {
     private readonly  jwtService: JwtService,
     private readonly fileService: FilesService,
     private readonly smsService: SmsService,
+    private readonly mailService: MailService,
   ){}
 
   async getToken(user: User){
@@ -43,6 +45,11 @@ export class UserService {
     refresh_token: refreshToken
   }
   }
+
+  // findAllUser() {
+  //   return  this.userRepo.findAll()
+  // }
+
 
   async registeration(createUserDto: CreateUserDto, res: Response, user_photo: string ){
     const fileName = await this.fileService.createFile(user_photo)
@@ -71,22 +78,27 @@ export class UserService {
     },
     {
       where: {id: newUser.id},returning : true
-    }
-    )
+    })
 
     try {
-        const phoneUser = createUserDto.phone
-        const url = `${process.env.API_HOST}/api/user/activate/${updatedUser[1][0].activation_link}`
-        const messages: string = `Hurmatli mijos siz mabu link orqali uzingizni activlashtirishingiz mumkin ${url}`
-        const resp = await this.smsService.sendSms(phoneUser.slice(1),  messages)
-        if (resp.status !== 200) {
-          throw new ServiceUnavailableException("Otp jo'natilmadi");
-        }
-        const message = 'code has been sent to *****' + phoneUser.slice(phoneUser.length - 4)
-        return {status: "success", Detailes: message}
+      await this.mailService.sendUserConfirmation(updatedUser[1][0])
     } catch (error) {
       console.log(error); 
     }
+
+    // try {
+    //     const phoneUser = createUserDto.phone
+    //     const url = `${process.env.API_HOST}/api/user/activate/${updatedUser[1][0].activation_link}`
+    //     const messages: string = `Hurmatli mijos siz mabu link orqali uzingizni activlashtirishingiz mumkin ${url}`
+    //     const resp = await this.smsService.sendSms(phoneUser.slice(1),  messages)
+    //     if (resp.status !== 200) {
+    //       throw new ServiceUnavailableException("Otp jo'natilmadi");
+    //     }
+    //     const message = 'code has been sent to *****' + phoneUser.slice(phoneUser.length - 4)
+    //     return {status: "success", Detailes: message}
+    // } catch (error) {
+    //   console.log(error); 
+    // }
     res.cookie("refresh_token", tokens.refresh_token, {
       maxAge: 10 * 60 * 24 * 60 * 1000,
       httpOnly: true
@@ -99,7 +111,8 @@ export class UserService {
     }
     return respons
   }
-  
+
+
   async activate(link:string) {
     if(!link){
       throw new BadRequestException('Activation link not found')

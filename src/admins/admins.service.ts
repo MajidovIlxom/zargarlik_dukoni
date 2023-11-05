@@ -11,6 +11,8 @@ import { SmsService } from '../sms/sms.service';
 import { TokenService } from '../tokens/tokens.service';
 import { FindAdminDto } from './dto/find-admin.dto';
 import { Op } from 'sequelize';
+import { MailService } from '../mail/mail.service';
+import { ChangePassword } from './dto/change-password-admin.dto';
 
 @Injectable()
 export class AdminsService {
@@ -19,6 +21,7 @@ export class AdminsService {
     private readonly  jwtService: JwtService,
     private readonly tokenService: TokenService,
     private readonly smsService: SmsService,
+    private readonly mailService: MailService,
   ){}
  
   async registration(createAdminDto: CreateAdminDto, res: Response){
@@ -40,17 +43,24 @@ export class AdminsService {
     },{
       where: {id: newadmin.id},returning : true
     })
+
     try {
-      const phoneAdmin = createAdminDto.phoneNumber
-      const url = `${process.env.API_HOST}/api/Admin/activate/${updatedadmin[1][0].activation_link}`
-      const messages: string = `Hurmatli Admin siz mabu link orqali uzingizni activlashtirishingiz mumkin\n ${url}`
-      const resp = await this.smsService.sendSms(phoneAdmin.slice(1),  messages)
-      if (resp.status !== 200) throw new ServiceUnavailableException("Sms xabar jo'natilmadi");
-      const message = 'code has been sent to *****' + phoneAdmin.slice(phoneAdmin.length - 4)
-      return {status: "success", Detailes: message}
-  } catch (error) {
-    console.log(error); 
-  }
+      await this.mailService.sendAdminConfirmation(updatedadmin[1][0])
+    } catch (error) {
+      console.log(error); 
+    }
+
+  //   try {
+  //     const phoneAdmin = createAdminDto.phoneNumber
+  //     const url = `${process.env.API_HOST}/api/Admin/activate/${updatedadmin[1][0].activation_link}`
+  //     const messages: string = `Hurmatli Admin siz mabu link orqali uzingizni activlashtirishingiz mumkin\n ${url}`
+  //     const resp = await this.smsService.sendSms(phoneAdmin.slice(1),  messages)
+  //     if (resp.status !== 200) throw new ServiceUnavailableException("Sms xabar jo'natilmadi");
+  //     const message = 'code has been sent to *****' + phoneAdmin.slice(phoneAdmin.length - 4)
+  //     return {status: "success", Detailes: message}
+  // } catch (error) {
+  //   console.log(error); 
+  // }
     res.cookie("refresh_token", tokens.refresh_token, {
       maxAge: 10 * 60 * 24 * 60 * 1000,
       httpOnly: true
@@ -61,6 +71,31 @@ export class AdminsService {
       tokens,
     }
     return respons
+  }
+
+  async updatePass(refreshToken: string, updatePass: ChangePassword) {
+    const decodedToken = this.jwtService.decode(refreshToken);
+    const admin = await this.adminRepo.findOne({ where: { id: decodedToken['id'] } });
+    if (!admin) throw new BadRequestException('Admin not found');
+    if (updatePass.old_password && updatePass.new_password) {
+      const oldPassMatch = await bcrypt.compare(
+        updatePass.old_password,
+        admin.hashed_password,
+        );
+      if (!oldPassMatch) throw new BadRequestException('Incorrect password');
+    }
+    const hashed_password = await bcrypt.hash(
+      updatePass.new_password,
+      12,
+    );
+    const [updatedRowCount, [updatedAdmin]] = await this.adminRepo.update(
+      { hashed_password: hashed_password },
+      {
+        where: { id: decodedToken['id'] },
+        returning: true,
+      });
+    if (updatedRowCount === 0 || !updatedAdmin)  throw new BadRequestException('Update failed');
+    return { message: 'Successfully updated' };
   }
 
   async activate(link:string) {
@@ -74,6 +109,9 @@ export class AdminsService {
     return response
   }
 
+  findAllAdmin() {
+    return this.adminRepo.findAll();;
+  }
 
   async login (loginAdminDto: LoginAdminDto, res: Response) {
     const {email, hashed_password} = loginAdminDto

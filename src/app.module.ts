@@ -20,6 +20,7 @@ import { ImagesGalery } from './images_galery/models/images_galery.models';
 import { Category } from './category/models/category.models';
 import { Order } from './order/models/order.models';
 import { Payment } from './payment/models/payment.model';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -53,7 +54,8 @@ import { Payment } from './payment/models/payment.model';
     BasketModule,
     OrderModule,
     PaymentModule,
-    ImagesGaleryModule
+    ImagesGaleryModule,
+    MailModule
   ],
   controllers: [],
   providers: [],

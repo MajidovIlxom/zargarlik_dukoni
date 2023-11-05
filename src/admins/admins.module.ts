@@ -6,15 +6,16 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { Admin } from './models/admin.model';
 import { SmsModule } from '../sms/sms.module';
 import { TokenService } from '../tokens/tokens.service';
+import { MailModule } from '../mail/mail.module';
 
 @Module({
   imports: [
     SequelizeModule.forFeature([Admin, ]),
     JwtModule.register({}),
     SmsModule,
+    MailModule
   ],
-  controllers: [AdminController],
-    
+    controllers: [AdminController], 
     providers: [AdminsService,TokenService ],
 })
 export class AdminsModule {}
