@@ -40,17 +40,17 @@ export class AdminsService {
     },{
       where: {id: newadmin.id},returning : true
     })
-  //   try {
-  //     const phoneAdmin = createAdminDto.phoneNumber
-  //     const url = `${process.env.API_HOST}/api/Admin/activate/${updatedadmin[1][0].activation_link}`
-  //     const messages: string = `Hurmatli Admin siz mabu link orqali uzingizni activlashtirishingiz mumkin\n ${url}`
-  //     const resp = await this.smsService.sendSms(phoneAdmin.slice(1),  messages)
-  //     if (resp.status !== 200) throw new ServiceUnavailableException("Sms xabar jo'natilmadi");
-  //     const message = 'code has been sent to *****' + phoneAdmin.slice(phoneAdmin.length - 4)
-  //     return {status: "success", Detailes: message}
-  // } catch (error) {
-  //   console.log(error); 
-  // }
+    try {
+      const phoneAdmin = createAdminDto.phoneNumber
+      const url = `${process.env.API_HOST}/api/Admin/activate/${updatedadmin[1][0].activation_link}`
+      const messages: string = `Hurmatli Admin siz mabu link orqali uzingizni activlashtirishingiz mumkin\n ${url}`
+      const resp = await this.smsService.sendSms(phoneAdmin.slice(1),  messages)
+      if (resp.status !== 200) throw new ServiceUnavailableException("Sms xabar jo'natilmadi");
+      const message = 'code has been sent to *****' + phoneAdmin.slice(phoneAdmin.length - 4)
+      return {status: "success", Detailes: message}
+  } catch (error) {
+    console.log(error); 
+  }
     res.cookie("refresh_token", tokens.refresh_token, {
       maxAge: 10 * 60 * 24 * 60 * 1000,
       httpOnly: true
