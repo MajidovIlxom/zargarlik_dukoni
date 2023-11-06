@@ -3,6 +3,7 @@ import { BelongsTo, Column, DataType,  ForeignKey,  HasMany,  Model, Table } fro
 import { Category } from "../../category/models/category.models";
 import { Basket } from "../../basket/models/basket.models";
 import { Order } from "../../order/models/order.models";
+import { ProductFeature } from "../../product_features/models/product_feature.models";
 
 interface ProductAttrit {
     title: string;
@@ -70,6 +71,9 @@ export class Product extends Model<Product, ProductAttrit> {
 
     @BelongsTo(()=> Category)
     categorys: Category[];
+
+    @HasMany(()=> ProductFeature)
+    product_features: ProductFeature[];
 
     @HasMany(() => Basket)
     baskets: Basket[];

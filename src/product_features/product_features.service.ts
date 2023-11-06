@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, BadRequestException } from '@nestjs/common';
 import { CreateProductFeatureDto } from './dto/create-product_feature.dto';
 import { UpdateProductFeatureDto } from './dto/update-product_feature.dto';
 import { InjectModel } from '@nestjs/sequelize';
@@ -12,7 +12,7 @@ export class ProductFeaturesService {
   ){}
 
 
-  create(createProductFeatureDto: CreateProductFeatureDto) {
+  async create(createProductFeatureDto: CreateProductFeatureDto) {
     return this.productFeaturesRepo.create(createProductFeatureDto);
   }
 

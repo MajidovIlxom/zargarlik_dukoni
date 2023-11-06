@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, UseGuards } from '@nestjs/common';
 import { ImagesGaleryService } from './images_galery.service';
 import { CreateImagesGaleryDto } from './dto/create-images_galery.dto';
-import { UpdateImagesGaleryDto } from './dto/update-images_galery.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AdminGuard } from '../guards/jwt.admin.guard';
@@ -32,13 +31,6 @@ export class ImagesGaleryController {
   @Get('findOne/:id')
   findOne(@Param('id') id: string) {
     return this.imagesGaleryService.findOne(+id);
-  }
-
-  @ApiOperation({summary: "Update "})
-  @UseGuards(AdminGuard)
-  @Patch('update/:id')
-  update(@Param('id') id: string, @Body() updateImagesGaleryDto: UpdateImagesGaleryDto) {
-    return this.imagesGaleryService.update(+id, updateImagesGaleryDto);
   }
 
   @ApiOperation({summary: "Images removed"})

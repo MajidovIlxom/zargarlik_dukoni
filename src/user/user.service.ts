@@ -46,9 +46,9 @@ export class UserService {
   }
   }
 
-  // findAllUser() {
-  //   return  this.userRepo.findAll()
-  // }
+  findAllUser() {
+    return  this.userRepo.findAll()
+  }
 
 
   async registeration(createUserDto: CreateUserDto, res: Response, user_photo: string ){

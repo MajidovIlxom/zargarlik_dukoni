@@ -10,12 +10,12 @@ export class OrderService {
   private readonly orderRepo: typeof Order
   ){}
   
-  create(createOrderDto: CreateOrderDto) {
+  async create(createOrderDto: CreateOrderDto) {
     return this.orderRepo.create(createOrderDto)
   }
 
   findAll() {
-    return this.orderRepo.findAll();
+    return this.orderRepo.findAll({include: {all: true}});
   }
 
   findOne(id: number) {
@@ -24,7 +24,7 @@ export class OrderService {
 
   update(id: number, updateOrderDto: UpdateOrderDto) {
     const updateOrder = this.orderRepo.update(updateOrderDto,{
-      where: {id: id}
+      where: {id: id},returning: true
     })
     return updateOrder[1][0]
   }

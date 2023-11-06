@@ -18,7 +18,7 @@ export class ProductFeature extends Model<ProductFeature, ProductFeatureAttrit>{
     })
     id: number;
 
-    // @ForeignKey(()=> Product)
+    @ForeignKey(()=> Product)
     @ApiProperty({example: 1, description: "Product Product ID"})
     @Column({
         type: DataType.INTEGER,
@@ -38,6 +38,6 @@ export class ProductFeature extends Model<ProductFeature, ProductFeatureAttrit>{
     })
     product_value: string
 
-    // @BelongsTo(()=> Product)
-    // products: Product[]
+    @BelongsTo(()=> Product)
+    products: Product[]
 }

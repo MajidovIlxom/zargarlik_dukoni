@@ -8,9 +8,7 @@ export class AdminGuard implements CanActivate {
     constructor(private readonly jwtService: JwtService ){}
     canActivate(context: ExecutionContext){
         const req = context.switchToHttp().getRequest()
-        const authHeader = req.headers.authorization
-        console.log(authHeader);
-        
+        const authHeader = req.headers.authorization        
         if (!authHeader)
         {
             throw new UnauthorizedException("Admin unauthorized")
@@ -26,7 +24,6 @@ export class AdminGuard implements CanActivate {
             const admin: Partial<Admin> = await jwtService.verify(token, {
                 secret: process.env.ACCESS_TOKEN_KEY
             });
-            console.log(admin);
             
             if (!admin){
                 throw new UnauthorizedException("Admin unauthorized")

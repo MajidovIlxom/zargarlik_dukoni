@@ -1,5 +1,5 @@
 // basket.service.ts
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, BadRequestException } from '@nestjs/common';
 import { CreateBasketDto } from './dto/create-basket.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { Basket } from './models/basket.models';
@@ -12,6 +12,10 @@ export class BasketService {
   ) {}
 
   async create(createBasketDto: CreateBasketDto) {
+    const basket = await this.basketRepo.findOne()
+    if (createBasketDto.product_id && createBasketDto.user_id !== basket.id){
+      throw new BadRequestException("Invalid basket product id or user id")
+    }
     return this.basketRepo.create(createBasketDto);
   }
 

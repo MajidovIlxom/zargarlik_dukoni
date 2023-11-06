@@ -21,6 +21,7 @@ import { Category } from './category/models/category.models';
 import { Order } from './order/models/order.models';
 import { Payment } from './payment/models/payment.model';
 import { MailModule } from './mail/mail.module';
+import { ProductFeature } from './product_features/models/product_feature.models';
 
 @Module({
   imports: [
@@ -41,7 +42,8 @@ import { MailModule } from './mail/mail.module';
         ImagesGalery,
         Category,
         Order,
-        Payment
+        Payment,
+        ProductFeature
       ],
       autoLoadModels: true,
       logging: false,

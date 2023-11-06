@@ -67,4 +67,11 @@ export class UserController {
   findAll(@Body() findUserDto: FindUserDto) {
     return this.userService.findAll(findUserDto)
   }
+
+  @ApiOperation({summary: "Find users"})
+  @Get('all')
+  findAllUser() {
+    return this.userService.findAllUser();
+  }
+
 }

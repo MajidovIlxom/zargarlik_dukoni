@@ -11,7 +11,7 @@ export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
   @ApiOperation({summary: "Create order"})
-  @UseGuards(UseGuards)
+  @UseGuards(USerGuard)
   @Post('create')
   create(@Body() createOrderDto: CreateOrderDto) {
     return this.orderService.create(createOrderDto);
@@ -24,21 +24,21 @@ export class OrderController {
   }
 
   @ApiOperation({summary: "Find order One "})
-  @Get(':id')
+  @Get('findOne/:id')
   findOne(@Param('id') id: string) {
     return this.orderService.findOne(+id);
   }
 
   @ApiOperation({summary: "Update Order "})
   @UseGuards(USerGuard)
-  @Patch(':id')
+  @Patch('update/:id')
   update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
     return this.orderService.update(+id, updateOrderDto);
   }
 
   @ApiOperation({summary: 'Order removed'})
   @UseGuards(USerGuard)
-  @Delete(':id')
+  @Delete('remove/:id')
   remove(@Param('id') id: string) {
     return this.orderService.remove(+id);
   }

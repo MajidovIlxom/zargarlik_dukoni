@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, BadRequestException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectModel } from '@nestjs/sequelize';
@@ -9,9 +9,14 @@ export class ProductService {
   constructor(@InjectModel(Product) 
   private readonly productRepo: typeof Product
   ){}
-  create(createProductDto: CreateProductDto) {
-    return this.productRepo.create(createProductDto);
+  
+  
+  async create(createProductDto: CreateProductDto) {
+    const createdProduct = await this.productRepo.create(createProductDto);
+    return createdProduct;
   }
+  
+  
 
   findAll() {
     return this.productRepo.findAll({include: {all: true}});

@@ -8,7 +8,8 @@ import { JwtModule } from '@nestjs/jwt';
 @Module({
   imports: [
     SequelizeModule.forFeature([Product]),
-    JwtModule
+    JwtModule,
+    
   ],
   controllers: [ProductController],
   providers: [ProductService],
