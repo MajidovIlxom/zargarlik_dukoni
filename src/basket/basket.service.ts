@@ -1,23 +1,29 @@
-// basket.service.ts
-import { Injectable, HttpException, HttpStatus, BadRequestException } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, BadRequestException, UnauthorizedException, NotFoundException } from '@nestjs/common';
 import { CreateBasketDto } from './dto/create-basket.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { Basket } from './models/basket.models';
+import { UserService } from '../user/user.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class BasketService {
   constructor(
     @InjectModel(Basket)
-    private readonly basketRepo: typeof Basket
+    private readonly basketRepo: typeof Basket,
+    private readonly jwtService: JwtService
   ) {}
 
   async create(createBasketDto: CreateBasketDto) {
-    const basket = await this.basketRepo.findOne()
-    if (createBasketDto.product_id && createBasketDto.user_id !== basket.id){
-      throw new BadRequestException("Invalid basket product id or user id")
+    try {
+      const basket = await this.basketRepo.create(createBasketDto);
+      return basket;
+    } catch (error) {
+      console.error("Xatolik yuz berdi: ", error);
+      throw error; // xatolikni qaytarish
     }
-    return this.basketRepo.create(createBasketDto);
   }
+  
+
 
   async findAll() {
     const result = await this.basketRepo.findAll({ include: { all: true } });

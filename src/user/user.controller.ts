@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Headers, Res, UseGuards, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Headers, Res, UseGuards, UploadedFile, UseInterceptors, BadRequestException } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -9,6 +9,7 @@ import { CookieGetter } from './../decorators/cookie-getter.decorator';
 import { USerGuard } from 'src/guards/user.guard';
 import { FindUserDto } from './dto/find-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ChangePassword } from './dto/change-password-admin.dto';
 
 
 @ApiTags("Users")
@@ -72,6 +73,34 @@ export class UserController {
   @Get('all')
   findAllUser() {
     return this.userService.findAllUser();
+  }
+
+  @ApiOperation({summary: 'findById a basket'})
+  @UseGuards(USerGuard)
+  @Get('findOne/:id')
+  findOne(@Param('id') id: string) {
+    return this.userService.findOne(+id);
+  }
+
+  // @Post('update-pass')
+  // @UseGuards(USerGuard)
+  // async updatePass(
+  //   @Headers('authorization') authorization: string, @Body() updatePassDto: ChangePassword) {
+  //   const refreshToken = authorization.replace('Bearer ', ''); 
+  //   return this.userService.updatePass(refreshToken, updatePassDto);
+  // }
+
+  @Post('update-pass')
+  async changePassword(
+    @CookieGetter('refresh_token') refreshToken: string,
+    @Body() updatePass: ChangePassword,
+  ) {
+    try {
+      const result = await this.userService.updatePass(refreshToken, updatePass);
+      return result;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
 }

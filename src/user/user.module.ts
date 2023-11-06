@@ -8,17 +8,18 @@ import { SmsModule } from '../sms/sms.module';
 import { FilesModule } from '../files/files.module';
 import { Basket } from '../basket/models/basket.models';
 import { MailModule } from '../mail/mail.module';
+import { TokenService } from '../tokens/tokens.service';
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([User, Basket]),
+    SequelizeModule.forFeature([User]),
     JwtModule.register({}),
     SmsModule,
     FilesModule,
     MailModule
   ],
   controllers: [UserController],
-  providers: [UserService],
+  providers: [UserService, TokenService],
   exports: [UserService]
 })
 export class UserModule {}

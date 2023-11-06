@@ -184,18 +184,14 @@ export class AdminsService {
 
   async findAll (findAdminDto: FindAdminDto) {
     const where = {}
-    if(findAdminDto.first_name) {
-      where['first_name'] = {
-        [Op.like]: `%${findAdminDto.first_name}%`
+    if(findAdminDto.fullname) {
+      where['fullname'] = {
+        [Op.like]: `%${findAdminDto.fullname}%`
       }
     }
-    if(findAdminDto.last_name) {
-      where['last_name'] = {
-        [Op.like]: `%${findAdminDto.last_name}%`
-      }
-    }
+    
     if(findAdminDto.phoneNumber) {
-      where['phone'] = {
+      where['phoneNumber'] = {
         [Op.like]: `%${findAdminDto.phoneNumber}%`
       }
     }

@@ -4,6 +4,7 @@ import { Category } from "../../category/models/category.models";
 import { Basket } from "../../basket/models/basket.models";
 import { Order } from "../../order/models/order.models";
 import { ProductFeature } from "../../product_features/models/product_feature.models";
+import { ImagesGalery } from "../../images_galery/models/images_galery.models";
 
 interface ProductAttrit {
     title: string;
@@ -80,4 +81,7 @@ export class Product extends Model<Product, ProductAttrit> {
 
     @HasMany(() => Order)
     orders: Order[];
+
+    @HasMany(()=> ImagesGalery)
+    images: ImagesGalery[];
 }

@@ -1,6 +1,6 @@
 // basket.models.ts
 import { ApiProperty } from "@nestjs/swagger";
-import {  BelongsTo, Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import {  BelongsTo, Column, DataType, ForeignKey, HasMany, Model, Table } from "sequelize-typescript";
 import { Product } from "../../product/models/product.models";
 import { User } from "../../user/Models/user.models";
 
@@ -28,15 +28,6 @@ export class Basket extends Model<Basket, BasketAttributes> {
     type: DataType.INTEGER,
   })
   product_id: number;
-
-  
-  @ForeignKey(()=> User)
-  @ApiProperty({ example: 1, description: "Foydalanuvchi ID" })
-  @Column({
-    type: DataType.INTEGER,
-  })
-  user_id: number;
-  
   
   @ApiProperty({ example: 100, description: "Jami summa" })
   @Column({
@@ -48,7 +39,4 @@ export class Basket extends Model<Basket, BasketAttributes> {
   @BelongsTo(()=> Product)
   product: Product;
 
-
-  @BelongsTo(()=> User)
-  user: User;
 }

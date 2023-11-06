@@ -14,9 +14,7 @@ export class ImagesGaleryService {
 
   async create(createImagesGaleryDto: CreateImagesGaleryDto, image: any) {
     try {
-      const images = await this.fileService.createFile(image);
-      console.log(images);
-      
+      const images = await this.fileService.createFile(image);      
       const imagesGalery = await this.imagesGaleryRepo.create({
         ...createImagesGaleryDto,
         photo: images,

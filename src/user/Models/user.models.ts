@@ -1,7 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Column, DataType, HasMany, Model, Table } from "sequelize-typescript";
-import { Basket } from "../../basket/models/basket.models";
-import { Order } from "../../order/models/order.models";
+
 
 interface UserCreationAttr{
     first_name: string;
@@ -80,11 +79,5 @@ export class User extends Model<User, UserCreationAttr>{
         type: DataType.STRING,
     })
     activation_link: string
-
-    @HasMany(()=> Basket)
-    baskets: Basket[]
-
-    @HasMany(() => Order)
-    orders: Order[]
 }
 

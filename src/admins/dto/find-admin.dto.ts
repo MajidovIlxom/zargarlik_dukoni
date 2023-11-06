@@ -1,6 +1,5 @@
 export class FindAdminDto  {
-    first_name?: string;
-    last_name?: string;
+    fullname?: string;
     email?: string;
     phoneNumber?: string;
 }

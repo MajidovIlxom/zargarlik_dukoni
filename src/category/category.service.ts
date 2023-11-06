@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { InjectModel } from '@nestjs/sequelize';
@@ -13,7 +13,13 @@ export class CategoryService {
 
 
   create(createCategoryDto: CreateCategoryDto) {
-    return this.categoryRepo.create(createCategoryDto)
+    try {
+      return this.categoryRepo.create(createCategoryDto)
+    } catch (error) {
+      console.log(error);
+      if (error) throw new BadRequestException("Siz noto'g'ri malumot kirittingiz")
+      
+    }
   }
 
   findAll() {

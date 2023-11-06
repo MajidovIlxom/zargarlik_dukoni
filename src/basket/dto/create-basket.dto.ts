@@ -5,8 +5,5 @@ export class CreateBasketDto {
     product_id: number;
 
     @IsNumber()
-    user_id: number;
-
-    @IsNumber()
     subtotal: number
 }

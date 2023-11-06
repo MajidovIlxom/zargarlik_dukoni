@@ -24,10 +24,13 @@ export class ImagesGalery extends Model<ImagesGalery, ImagesGaleryAttribt>{
     })
     photo: string;
 
-
+    @ForeignKey(() => Product)
     @ApiProperty({example: 1, description: "Product ID"})
     @Column({
         type: DataType.INTEGER,
     })
     product_id: number;
+
+    @BelongsTo(() => Product)
+    product: Product;
 }
